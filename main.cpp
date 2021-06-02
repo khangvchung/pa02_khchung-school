@@ -1,10 +1,13 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <ctime>
 #include <vector>
 #include <cstring>
 #include <algorithm>
+
+#include "movies.h"
 
 using namespace std;
 
@@ -37,14 +40,35 @@ int main(int argc, char** argv){
 
   // Create an objects of the BST class you defined 
   // to contain the name and rating in the input file
+  MoviesTree tree1;
 
   // Read each file and store the name and rating
   while (getline (movieFile, line) && parseLine(line, movieName, movieRating)){
     // Use std::string movieName and double movieRating
     // to construct your Movie objects
-    cout << movieName << " has rating " << movieRating << endl;
+    stringstream ss;
+    ss << line;
+    string temp;
+    string title;
+    double rating;
+    getline(ss, temp);
+    for(int i = 0; i < temp.length(); i++) {
+      if(temp[i] == '"'){
+        temp.replace(i, 1, "");
+      }
+    }
+    title = temp.substr(0, temp.rfind(','));
+    rating = stod(temp.substr(temp.rfind(',')+1, temp.length()));
+    //cout << title << "|" << rating << endl;
+
+    tree1.addNode(title, rating);
+
+    //cout << movieName << " has rating " << movieRating<< endl;
   }
   movieFile.close();
+  tree1.printPreOrder();
+  cout << endl;
+  tree1.maxPrefix(argv[3]);
 
   return 0;
 }
